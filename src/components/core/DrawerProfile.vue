@@ -14,15 +14,23 @@
           <v-list-tile-title>Profile</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
+      <v-list-tile @click="logout">
+        <v-list-tile-action>
+          <v-icon large>mdi-logout</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Logout</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile @click="exit" color='warning'>
+        <v-list-tile-action>
+          <v-icon large>mdi-close-box-outline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Exit</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-      <v-bottom-nav
-        :active.sync="bottomNav"
-        :value="true"
-        absolute
-        color="red"
-      >
-        <v-btn @click="exit">Exit</v-btn>
-      </v-bottom-nav>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -33,6 +41,9 @@
     data: () => ({
     }),
     methods: {
+      logout: function(){
+        this.$emit('drawerLogout')
+      },
       exit: function(){
         this.$emit('drawerExit')
       }

@@ -27,7 +27,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import userApi from '../../api/user.js'
+  import teacherApi from '../../api/teacher.js'
   export default {
     props: ['drawer'],
     data: () => ({
@@ -45,19 +46,19 @@
       }
     },
     methods: {
-      login: function () {
-        let url = 'https://api-ilearning.herokuapp.com/api/v1/user/login'
-        if (this.isTeacher){
-          url = 'https://api-ilearning.herokuapp.com/api/v1/admin/login'
+      login: async function(){
+        let res = {}
+        if (this.isTeacher) {
+          res = await teacherApi.login(this.email,this.password)
+        } else {
+          res = await userApi.login(this.email,this.password)
         }
-        axios.post(url, {
-          email: this.email,
-          password: this.password
-        }).then(
-          (res) => {
-            console.log(res)
-          }
-        )
+        let result = res.data
+        if(result.isSuccessfully){
+          this.$emit('loginSuccess',result.data.userInfo,this.isTeacher)
+        } else {
+          console.log(result.message)
+        }
       },
       exit: function(){
         this.$emit('drawerExit')

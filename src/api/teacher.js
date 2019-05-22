@@ -1,8 +1,8 @@
 const axios = require('axios')
-import { userApi } from './config'
+import { teacherApi } from './config'
 export default {
   login: async (email,password) => {
-    let url = userApi('login')
+    let url = teacherApi('login')
     return await axios.post(url, {
       email: email,
       password: password

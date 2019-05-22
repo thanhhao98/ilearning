@@ -9,8 +9,8 @@
       :userData="userData">
     </CoreToolbar >
 
-    <CoreDrawerProfile  @drawerExit="drawerEmitExit" :drawer="drawerProfile"></CoreDrawerProfile>
-    <CoreDrawerLogin    @drawerExit="drawerEmitExit" :drawer="drawerLogin"></CoreDrawerLogin>
+    <CoreDrawerProfile @drawerLogout="drawerEmitLogout" @drawerExit="drawerEmitExit" :drawer="drawerProfile"></CoreDrawerProfile>
+    <CoreDrawerLogin @loginSuccess="loginEmitSuccess"    @drawerExit="drawerEmitExit" :drawer="drawerLogin"></CoreDrawerLogin>
     <CoreDrawerRegister @drawerExit="drawerEmitExit" :drawer="drawerRegister"></CoreDrawerRegister>
 
     <core-view />
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-
+  import { media } from './api/config.js'
   export default {
     name: 'App',
     components: {
@@ -37,14 +37,9 @@
         drawerProfile: false,
         drawerLogin: false,
         drawerRegister: false,
-        userData: {
-          avt: "https://cdn.vuetifyjs.com/images/john.jpg",
-          username: "testAvt2",
-          email: "testAvt2@gmail.com",
-          name: "testAvt2",
-          isAdmin: true,
-        },
+        userData: {},
         isLogin: false,
+        isTeacher: false,
         links: [
           {
             to: '#',
@@ -81,27 +76,72 @@
         ]
       }
     },
+    created: function () {
+      if(this.$cookies.get('userData')!=null){
+        this.userData = this.$cookies.get('userData')
+      } else {
+        this.userData = {}
+      }
+      if(this.$cookies.get('isTeacher')!=null){
+        this.isTeacher = this.$cookies.get('isTeacher')
+      } else {
+        this.isTeacher = false
+      }
+      if(this.$cookies.get('isLogin')){
+        this.isLogin = this.$cookies.get('isLogin')
+      } else {
+        this.isLogin = false
+      }
+      console.log(this.userData)
+      console.log(this.isTeacher)
+      console.log(this.isLogin)
+    },
     methods: {
-      drawerEmitProfile: function() {
+      drawerEmitProfile: function () {
         this.drawerProfile = true
         this.drawerLogin = false
         this.drawerRegister = false
       },
-      drawerEmitLogin: function() {
+      drawerEmitLogin: function () {
         this.drawerProfile = false
         this.drawerLogin = true
         this.drawerRegister = false
       },
-      drawerEmitRegister: function() {
+      drawerEmitRegister: function () {
         this.drawerProfile = false
         this.drawerLogin = false
         this.drawerRegister = true
       },
-      drawerEmitExit: function() {
+      drawerEmitExit: function () {
+        this.drawerProfile = false
+        this.drawerLogin = false
+        this.drawerRegister = false
+      },
+      loginEmitSuccess: function (data, isTeacher) {
+        console.log(isTeacher)
+        data.avt = media(data.avt)
+        this.$cookies.set('userData',data)
+        this.$cookies.set('isTeacher',isTeacher)
+        this.$cookies.set('isLogin',true)
+        this.userData = data
+        this.isTeacher = isTeacher
+        this.isLogin = true
+        this.drawerProfile = false
+        this.drawerLogin = false
+        this.drawerRegister = false
+      },
+      drawerEmitLogout: function(){
+        this.$cookies.remove('userData')
+        this.$cookies.remove('isTeacher')
+        this.$cookies.remove('isLogin')
+        this.userData = {}
+        this.isTeacher = false
+        this.isLogin = false
         this.drawerProfile = false
         this.drawerLogin = false
         this.drawerRegister = false
       }
-    }
+    },
+
   }
 </script>
