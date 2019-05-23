@@ -8,10 +8,12 @@
       </v-flex>
 
       <feed-card
-        v-for="(article, i) in paginatedArticles"
+        v-for="(article, i) in paginatedCourses"
         :key="article.title"
         :size="layout[i]"
         :value="article"
+        :userData="userData"
+        :isAssign='isAssign'
       />
     </v-layout>
 
@@ -55,33 +57,58 @@
 </template>
 
 <script>
-  // Utilities
-  import {
-    mapState
-  } from 'vuex'
-
   export default {
     name: 'Feed',
-
+    props: ['courses'],
     components: {
       FeedCard: () => import('@/components/FeedCard')
     },
 
     data: () => ({
       layout: [2, 2, 1, 2, 2, 3, 3, 3, 3, 3, 3],
-      page: 1
+      page: 1,
+      userData: {},
+      isLogin: false,
+      isTeacher: false,
+      isAssign: false,
+
     }),
 
+    created: function () {
+      if(this.$cookies.get('userData')!=null) {
+        this.userData = this.$cookies.get('userData')
+      } else {
+        this.userData = {}
+      }
+      if(this.$cookies.get('isTeacher')!=null) {
+        this.isTeacher = this.$cookies.get('isTeacher') == 'true'
+      } else {
+        this.isTeacher = false
+      }
+      if(this.$cookies.get('isLogin')) {
+        this.isLogin = this.$cookies.get('isLogin') == 'true'
+      } else {
+        this.isLogin = false
+      }
+      if(this.isLogin){
+        if(this.isTeacher){
+          this.isAssign = false
+        } else {
+          this.isAssign = true
+        }
+      } else {
+        this.isAssign = false
+      }
+    },
+
     computed: {
-      ...mapState(['articles']),
       pages () {
-        return Math.ceil(this.articles.length / 11)
+        return Math.ceil(this.courses.length / 11)
       },
-      paginatedArticles () {
+      paginatedCourses () {
         const start = (this.page - 1) * 11
         const stop = this.page * 11
-
-        return this.articles.slice(start, stop)
+        return this.courses.slice(start, stop)
       }
     },
 
@@ -89,6 +116,6 @@
       page () {
         window.scrollTo(0, 0)
       }
-    }
+    },
   }
 </script>

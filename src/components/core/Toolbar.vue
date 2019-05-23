@@ -28,22 +28,13 @@
         >
           {{ home.text }}
         </v-btn>
-        <v-btn
-          v-for="(link, i) in buttons"
-          :key="i"
-          :to="link.to"
-          class="ml-0 hidden-sm-and-down"
-          flat
-          @click="onClick($event, item)"
-        >
-          {{ link.text }}
-        </v-btn>
-        <v-btn v-if="isMoveLeft" small flat @click="leftClick">
-          <v-icon dark>mdi-chevron-double-left</v-icon>
-        </v-btn>
-        <v-btn  v-if="isMoveRight" small flat @click="rightClick">
-          <v-icon dark>mdi-chevron-double-right</v-icon>
-        </v-btn>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6>
+          <v-text-field
+            label="Search"
+            single-line
+          ></v-text-field>
+        </v-flex>
         <v-spacer></v-spacer>
         <div v-if="isLogin" >
           <v-btn fab dark @click="drawerProfile">
@@ -69,13 +60,9 @@
 <script>
 
   export default {
-    props: ['links','isLogin','userData'],
+    props: ['isLogin','userData'],
     data: function () {
       return {
-        moveLeft: false,
-        moveRight: true,
-        from: 0,
-        to: 5,
         home:{
           to: '/',
           text: 'Home'
@@ -83,39 +70,25 @@
       }
     },
     computed: {
-      hasAvt: function(){
-        return this.userData.avt != ''
+      hasAvt: function () {
+        if(this.userData.avt == undefined){
+          return false
+        }
+        return this.userData.avt !== ''
       },
-      firstName: function(){
+      firstName: function () {
         return this.userData.name[0]
-      },
-      buttons: function(){
-        return this.links.slice(this.from,this.to)
-      },
-      isMoveLeft: function(){
-        return this.from > 0
-      },
-      isMoveRight: function(){
-        return this.to <  this.links.length
       }
     },
     methods: {
-      drawerProfile: function(){
+      drawerProfile: function () {
         this.$emit('drawerProfile')
       },
-      drawerLogin: function(){
+      drawerLogin: function () {
         this.$emit('drawerLogin')
       },
-      drawerRegister: function(){
+      drawerRegister: function () {
         this.$emit('drawerRegister')
-      },
-      rightClick: function() {
-        this.from +=1
-        this.to +=1
-      },
-      leftClick: function() {
-        this.from -=1
-        this.to -=1
       },
       onClick (e, item) {
         e.stopPropagation()

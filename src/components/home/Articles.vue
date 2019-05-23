@@ -1,6 +1,8 @@
 <template>
   <section id="feed">
-    <feed>
+    <feed
+      :courses='courses'
+    >
       <slot />
     </feed>
   </section>
@@ -8,6 +10,7 @@
 
 <script>
   export default {
+    props: ['courses'],
     components: {
       Feed: () => import('@/components/Feed')
     }

@@ -1,6 +1,5 @@
 <template>
   <v-navigation-drawer
-    v-model="drawer"
     fixed
     right
     app
@@ -12,6 +11,30 @@
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>Profile</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile v-if="!isTeacher" @click="">
+        <v-list-tile-action>
+          <v-icon large>mdi-marker-check</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Already course</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile v-if="isTeacher" @click="">
+        <v-list-tile-action>
+          <v-icon large>mdi-marker-check</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>My course</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile v-if="!isTeacher" @click="">
+        <v-list-tile-action>
+          <v-icon large>mdi-dots-horizontal</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Waiting course</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile @click="logout">
@@ -27,7 +50,7 @@
           <v-icon large>mdi-close-box-outline</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Exit</v-list-tile-title>
+          <v-list-tile-title>Close</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
 
@@ -37,14 +60,14 @@
 
 <script>
   export default {
-    props: ["drawer"],
+    props: ["isTeacher"],
     data: () => ({
     }),
     methods: {
-      logout: function(){
+      logout: function () {
         this.$emit('drawerLogout')
       },
-      exit: function(){
+      exit: function () {
         this.$emit('drawerExit')
       }
     }

@@ -7,5 +7,14 @@ export default {
       email: email,
       password: password
     })
+  },
+  register: async (formData) => {
+    let url = teacherApi('signup')
+    return await axios.post(url, formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }

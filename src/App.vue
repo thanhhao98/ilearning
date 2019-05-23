@@ -5,13 +5,12 @@
       @drawerLogin="drawerEmitLogin"
       @drawerRegister="drawerEmitRegister"
       :isLogin="isLogin"
-      :links="links"
       :userData="userData">
     </CoreToolbar >
 
-    <CoreDrawerProfile @drawerLogout="drawerEmitLogout" @drawerExit="drawerEmitExit" :drawer="drawerProfile"></CoreDrawerProfile>
-    <CoreDrawerLogin @loginSuccess="loginEmitSuccess"    @drawerExit="drawerEmitExit" :drawer="drawerLogin"></CoreDrawerLogin>
-    <CoreDrawerRegister @drawerExit="drawerEmitExit" :drawer="drawerRegister"></CoreDrawerRegister>
+    <CoreDrawerProfile :isTeacher='isTeacher' @drawerLogout="drawerEmitLogout" @drawerExit="drawerEmitExit" v-if='drawerProfile'></CoreDrawerProfile>
+    <CoreDrawerLogin @loginSuccess="loginEmitSuccess"    @drawerExit="drawerEmitExit" v-if='drawerLogin' ></CoreDrawerLogin>
+    <CoreDrawerRegister @drawerExit="drawerEmitExit" v-if='drawerRegister'></CoreDrawerRegister>
 
     <core-view />
 
@@ -39,62 +38,25 @@
         drawerRegister: false,
         userData: {},
         isLogin: false,
-        isTeacher: false,
-        links: [
-          {
-            to: '#',
-            text: 'type1'
-          },
-          {
-            to: '#',
-            text: 'type2'
-          },
-          {
-            to: '#',
-            text: 'type3'
-          },
-          {
-            to: '#',
-            text: 'type4'
-          },
-          {
-            to: '#',
-            text: 'type5'
-          },
-          {
-            to: '#',
-            text: 'type6'
-          },
-          {
-            to: '#',
-            text: 'type7'
-          },
-          {
-            to: '#',
-            text: 'type8'
-          }
-        ]
+        isTeacher: false
       }
     },
     created: function () {
-      if(this.$cookies.get('userData')!=null){
+      if(this.$cookies.get('userData')!=null) {
         this.userData = this.$cookies.get('userData')
       } else {
         this.userData = {}
       }
-      if(this.$cookies.get('isTeacher')!=null){
-        this.isTeacher = this.$cookies.get('isTeacher')
+      if(this.$cookies.get('isTeacher')!=null) {
+        this.isTeacher = this.$cookies.get('isTeacher') == 'true'
       } else {
         this.isTeacher = false
       }
-      if(this.$cookies.get('isLogin')){
-        this.isLogin = this.$cookies.get('isLogin')
+      if(this.$cookies.get('isLogin')) {
+        this.isLogin = this.$cookies.get('isLogin') == 'true'
       } else {
         this.isLogin = false
       }
-      console.log(this.userData)
-      console.log(this.isTeacher)
-      console.log(this.isLogin)
     },
     methods: {
       drawerEmitProfile: function () {
@@ -130,7 +92,7 @@
         this.drawerLogin = false
         this.drawerRegister = false
       },
-      drawerEmitLogout: function(){
+      drawerEmitLogout: function () {
         this.$cookies.remove('userData')
         this.$cookies.remove('isTeacher')
         this.$cookies.remove('isLogin')
