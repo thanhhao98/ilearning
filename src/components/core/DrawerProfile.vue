@@ -21,7 +21,7 @@
           <v-list-tile-title>Already course</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="isTeacher" @click="">
+      <v-list-tile v-if="isTeacher" @click="teacherMyCourse">
         <v-list-tile-action>
           <v-icon large>mdi-marker-check</v-icon>
         </v-list-tile-action>
@@ -66,6 +66,11 @@
     methods: {
       logout: function () {
         this.$emit('drawerLogout')
+        console.log(this.$router)
+        this.$router.push('/home')
+      },
+      teacherMyCourse: function() {
+        this.$router.push('/teacher/myCourse')
       },
       exit: function () {
         this.$emit('drawerExit')

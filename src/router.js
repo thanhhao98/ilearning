@@ -5,6 +5,9 @@ import QuickLookCourse from './views/QuickLookCourse.vue'
 import AlreadyCourse from './views/AlreadyCourse.vue'
 import WaitingCourse from './views/WaitingCourse.vue'
 import LearnCourse from './views/LearnCourse.vue'
+import TeacherMyCourse from './views/TeacherMyCourse.vue'
+import TeacherDetailCourse from './views/TeacherDetailCourse.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -17,10 +20,26 @@ export default new Router({
       component: Home
     },
     {
+      path: '/home',
+      name: 'home',
+      component: Home
+    },
+    {
       path: '/quickLookCourse/:id',
       props: true,
       name: 'quickLookCourse',
       component: QuickLookCourse
+    },
+    {
+      path: '/teacher/myCourse',
+      name: 'teacherMyCourse',
+      component: TeacherMyCourse
+    },
+    {
+      path: '/teacher/detailCourse/:id',
+      props: true,
+      name: 'learCourse',
+      component: TeacherDetailCourse
     },
     {
       path: '/user/learnCourse/:id',

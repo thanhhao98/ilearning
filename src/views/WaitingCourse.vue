@@ -62,7 +62,6 @@
     },
     methods: {
       mediaUrl: function(url){
-        console.log(media('url'))
         return media(url)
       },
       quickLook: function (id) {
