@@ -80,7 +80,6 @@
         this.drawerRegister = false
       },
       loginEmitSuccess: function (data, isTeacher) {
-        console.log(isTeacher)
         data.avt = media(data.avt)
         this.$cookies.set('userData',data)
         this.$cookies.set('isTeacher',isTeacher)

@@ -14,7 +14,7 @@
             >
               <v-card>
                 <v-img
-                  :src="card.image"
+                  :src="mediaUrl(card.image)"
                   height="200px"
                 >
                   <v-container
@@ -48,6 +48,7 @@
   </v-layout>
 </template>
 <script>
+  import { media } from '../api/config.js'
   import userApi from '../api/user.js'
   export default {
     data: () => ({
@@ -60,6 +61,10 @@
       console.log(this.cards)
     },
     methods: {
+      mediaUrl: function(url){
+        console.log(media('url'))
+        return media(url)
+      },
       learnCourse: function (id) {
         this.$router.push('/user/learnCourse/'+id)
       },
