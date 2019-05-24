@@ -1,6 +1,7 @@
 <template>
   <v-layout justify-center class="mt-4">
     <v-flex xs12 sm8>
+      <v-progress-linear v-if='prcessing' color='success' :indeterminate='true'></v-progress-linear>
       <v-layout row>
         <v-img
           :src="mediaUrl(course.image)"
@@ -72,10 +73,11 @@
 
 <script>
   import axios from 'axios'
-  import { media } from '../api/config.js'
+  import { media,teacherApi } from '../api/config.js'
   export default {
     name: 'DetailCourse',
     data: () => ({
+      prcessing: false,
       tab: null,
       id: '',
       course: '',
@@ -98,10 +100,13 @@
       },
     },
     created: function () {
-      console.log('detailCourse')
+      this.prcessing = true
       this.id = this.$route.params.id
+      if(this.$cookies.get('userData')==null){
+        this.$router.push('/')
+      }
       this.token = 'thanhhao ' + this.$cookies.get('userData').token
-      let getUserAssignPath = 'https://api-ilearning.herokuapp.com/api/v1/admin/listUserWaitingInCourse/' + this.id
+      let getUserAssignPath =  teacherApi('listUserWaitingInCourse/') + this.id
       axios.get(getUserAssignPath, {
         headers:
             {
@@ -110,10 +115,16 @@
             }
       }).then(
         res => {
-          this.list_user_assign = res.data.data.listUserAssign
+          if(res.data.isSuccessfully){
+            this.list_user_assign = res.data.data.listUserAssign
+          } else {
+            this.$router.push('/')
+          }
         }
-      )
-      let getInfoCourse = 'https://api-ilearning.herokuapp.com/api/v1/admin/viewCourse/' + this.id
+      ).catch(error=>{
+        this.$router.push('/')
+      })
+      let getInfoCourse = teacherApi('viewCourse/') + this.id
       axios.get(getInfoCourse, {
         headers:
           {
@@ -122,11 +133,18 @@
           }
       }).then(
         res => {
-          this.course = res.data.data.courseInfo
-          this.list_document = res.data.data.listDocument
-          this.list_video = res.data.data.listVideo
+          if(res.data.isSuccessfully){
+            this.course = res.data.data.courseInfo
+            this.list_document = res.data.data.listDocument
+            this.list_video = res.data.data.listVideo
+          } else {
+            this.$router.push('/')
+          }
         }
-      )
+      ).catch(error=>{
+        this.$router.push('/')
+      })
+      this.prcessing = false
     }
   }
 </script>

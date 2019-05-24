@@ -4,7 +4,14 @@
       <v-toolbar color="indigo" dark>
         <v-toolbar-title>My Courses</v-toolbar-title>
       </v-toolbar>
-      <v-card>
+      <v-alert v-if='emptyCard'
+        :value="true"
+        type="warning"
+      >
+        You have 0 course
+      </v-alert>
+      <v-progress-linear v-if='prcessing' color='success' :indeterminate='true'></v-progress-linear>
+      <v-card flat>
         <v-container>
           <v-layout row wrap>
             <v-flex
@@ -20,8 +27,8 @@
                 ></v-img>
                 <v-card-title primary-title class="pa-0 ml-3">
                   <div>
-                    <v-card-text class="blue--text headline pa-0 text-truncate">{{course.title}}</v-card-text>
-                    <v-card-text class="pa-0 text-truncate">{{course.description}}</v-card-text>
+                    <v-card-text class="blue--text headline pa-0 text-truncate">{{titleFix(course.title,21)}}</v-card-text>
+                    <v-card-text class="pa-0 text-truncate">{{titleFix(course.description,25)}}</v-card-text>
                       <v-icon>mdi-account-circle</v-icon> {{course.name}}
                     <br>
                     <v-icon>mdi-calendar</v-icon>{{course.date}}
@@ -34,10 +41,6 @@
             </v-flex>
           </v-layout>
         </v-container>
-        <v-card-actions class="mb-2 mx-4">
-        <v-spacer></v-spacer>
-        <v-btn color="red" @click="onBack()">back</v-btn>
-        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
@@ -47,18 +50,26 @@
 <script>
   import axios from 'axios'
   import moment from 'moment'
-  import { media } from '../api/config.js'
+  import { media,teacherApi } from '../api/config.js'
 
 
   export default {
     name: 'MyCourse',
     data: () => ({
+      emptyCard: false,
+      prcessing : false,
       list_course: [],
       token: ''
     }),
     created: function () {
+      this.emptyCard = false
+      this.prcessing = true
+      if(this.$cookies.get('userData')==null){
+        this.$router.push('/')
+        return
+      }
       this.token = 'thanhhao ' + this.$cookies.get('userData').token
-      axios.get('https://api-ilearning.herokuapp.com/api/v1/admin/listCourse',
+      axios.get(teacherApi('listCourse'),
         {
           headers:
               {
@@ -67,19 +78,32 @@
               }
         }).then(
         res => {
-          this.list_course = res.data.data.courseList
-          this.list_course.forEach(function (course) {
-            course.date = moment(course.date).format('MM/DD/YYYY')
-          })
+          if (res.data.isSuccessfully){
+            this.list_course = res.data.data.courseList
+            if(this.list_course.length == 0){
+              this.emptyCard = true
+            }
+            this.list_course.forEach(function (course) {
+              course.date = moment(course.date).format('MM/DD/YYYY')
+            })
+            this.prcessing = false
+          } else {
+            this.$router.push('/')
+          }
         }
-      )
+      ).catch(error=>{
+        this.$router.push('/')
+      })
     },
     methods: {
+      titleFix: function(title,num){
+        if(title.length > num){
+          return title.slice(0,num-4) + ' ...'
+        }
+        return title
+      },
       mediaUrl: function(url){
         return media(url)
-      },
-      onBack: function () {
-        // this.$router.push('/detail-course/10')
       },
       onDetailCourse: function (id) {
         this.$router.push('detailCourse/' + id.toString())

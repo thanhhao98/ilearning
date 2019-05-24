@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-progress-linear v-if='processing' color='success' :indeterminate='true'></v-progress-linear>
+    <v-progress-linear v-if="processing" color='success' :indeterminate='true'></v-progress-linear>
     <div style="position: fixed; left:400px; top:100px;">
       <iframe
         v-if = "showV"

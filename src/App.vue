@@ -5,6 +5,7 @@
       @drawerLogin="drawerEmitLogin"
       @drawerRegister="drawerEmitRegister"
       :isLogin="isLogin"
+      :isTeacher="isTeacher"
       :userData="userData">
     </CoreToolbar >
 
