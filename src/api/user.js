@@ -19,6 +19,39 @@ export default {
     })
     return res
   },
+  listApprove: async (token) => {
+    let url = userApi('getListCourseApprove')
+    let res = await axios.get(url,{
+      headers:
+        {
+          'Authorization':
+          'thanhhao ' + token
+        }
+    })
+    return res
+  },
+  listWaiting: async (token) => {
+    let url = userApi('getListCourseWaiting')
+    let res = await axios.get(url,{
+      headers:
+        {
+          'Authorization':
+          'thanhhao ' + token
+        }
+    })
+    return res
+  },
+  learnCourse: async (courseId,token) =>{
+    let url = userApi('viewCourse/') + courseId
+    let res = await axios.get(url, {
+      headers:
+        {
+          'Authorization':
+          'thanhhao ' + token
+        }
+    })
+    return res
+  },
   signCourse: async (courseId,token) => {
     let url = userApi('signCourse')
     let res = await axios.post(url, {
