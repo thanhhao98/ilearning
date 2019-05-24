@@ -98,6 +98,7 @@
       },
     },
     created: function () {
+      console.log('detailCourse')
       this.id = this.$route.params.id
       this.token = 'thanhhao ' + this.$cookies.get('userData').token
       let getUserAssignPath = 'http://api-ilearning.herokuapp.com/api/v1/admin/listUserWaitingInCourse/' + this.id
