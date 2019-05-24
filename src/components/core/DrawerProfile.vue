@@ -67,7 +67,8 @@
       logout: function () {
         this.$emit('drawerLogout')
         console.log(this.$router)
-        this.$router.push('/home')
+        this.$router.push('/')
+        location.reload();
       },
       teacherMyCourse: function() {
         this.$router.push('/teacher/myCourse')

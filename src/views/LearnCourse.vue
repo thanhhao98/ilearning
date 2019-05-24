@@ -1,78 +1,63 @@
 <template>
-<v-flex>
-  <div  style="position: fixed; left:400px; top:100px;">
-   <iframe v-if = "showV" id = "video" width="700" height="400"
-   src = ""
-   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-   allowfullscreen></iframe>
-   <pdf v-if= "showD" src="./src/Document/N33-TTCNPM.pdf"></pdf>
-    <!-- vẫn chưa render đc file pdf :( -->
+  <v-flex>
+    <v-progress-linear v-if='processing' color='success' :indeterminate='true'></v-progress-linear>
+    <div style="position: fixed; left:400px; top:100px;">
+      <iframe
+        v-if = "showV"
+        id = "video"
+        width="900"
+        height="600"
+        src = ""
+        frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      >
+      </iframe>
+      <embed
+        v-if= "showD"
+        id = "document"
+        src = ""
+        type="application/pdf"
+        width="900px"
+        height="600px"
+      >
+    </div>
 
-  </div>
-
-  <v-navigation-drawer permanent right="true" >
-    <v-toolbar flat>
+    <v-navigation-drawer permanent right="true" >
+      <v-toolbar flat>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title class="title">
+              {{data.courseInfo.title}}
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
+      <v-divider></v-divider>
       <v-list>
-        <v-list-tile>
-          <v-list-tile-title class="title">
-            {{data.courseInfo.title}}
-          </v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-toolbar>
-
-    <v-divider></v-divider>
-
-    <v-list>
-
-
-        <v-list-group
-          no-action
-          sub-group
-          value="true"
-        >
+        <v-list-group no-action sub-group value="true">
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-title style="color: blue">Video</v-list-tile-title>
             </v-list-tile>
           </template>
-
-          <v-list-tile
-            v-for="(admin, i) in data.listVideo"
-            :key="i"
-            @click="showVideo(admin)"
-          >
-            <v-list-tile-title v-text="admin.title"></v-list-tile-title>
-            <!-- <v-list-tile-action>
-              <v-icon v-text="ádsad"></v-icon>
-            </v-list-tile-action> -->
+          <v-list-tile v-for="(video, i) in data.listVideo" :key="i" @click="showVideo(video)">
+            <v-list-tile-title v-text="video.title"></v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-
-        <v-list-group
-          sub-group
-          no-action
-        >
+        <v-list-group sub-group no-action>
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-title>Document</v-list-tile-title>
             </v-list-tile>
           </template>
-          <v-list-tile
-            v-for="(crud, i) in data.listDocument"
-            :key="i"
-            @click="showDocument(crud)"
-          >
-            <v-list-tile-title v-text="crud.title"></v-list-tile-title>
-            <!-- <v-list-tile-action>
-              <v-icon v-text="crud[1]"></v-icon>
-            </v-list-tile-action> -->
+          <v-list-tile v-for="(doc, i) in data.listDocument" :key="i" @click="showDocument(doc)">
+            <v-list-tile-title v-text="doc.title"></v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-    </v-list>
-  </v-navigation-drawer>
+      </v-list>
+    </v-navigation-drawer>
 
-</v-flex>
+  </v-flex>
 
 </template>
 
@@ -88,31 +73,35 @@
         pdf
     },
     data: () => ({
+      processing: false,
       showV: false,
       showD: false,
       data: {
       }
     }),
     async mounted () {
+      this.processing = true
       let res = await userApi.learnCourse(this.id,this.$cookies.get('userData').token)
       if(res.data.isSuccessfully){
         this.data = res.data.data
-        console.log(this.data)
+        this.processing = false
       } else {
         this.$router.push('/')
       }
     },
     methods: {
       showVideo: function(ad){
-      this.showV = true,
-      this.showD = false,
-      document.getElementById('video').src = ad.path
+        this.showV = true,
+        this.showD = false,
+        document.getElementById('video').src = ad.path
       },
-      showDocument: function(ru){
+      showDocument: function(doc){
         this.showD = true
         this.showV = false
+        document.getElementById('document').src = media(doc.path)
       },
     }
   }
+
 </script>
 

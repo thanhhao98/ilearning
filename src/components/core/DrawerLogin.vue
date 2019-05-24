@@ -70,7 +70,8 @@
         let result = res.data
         if (result.isSuccessfully) {
           this.$emit('loginSuccess', result.data.userInfo, this.isTeacher)
-          this.$router.push('/home')
+          this.$router.push('/')
+          location.reload();
         } else {
           this.loginFail = true
           this.messageAlert = result.message

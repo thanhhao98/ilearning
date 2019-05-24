@@ -20,11 +20,6 @@ export default new Router({
       component: Home
     },
     {
-      path: '/home',
-      name: 'home',
-      component: Home
-    },
-    {
       path: '/quickLookCourse/:id',
       props: true,
       name: 'quickLookCourse',
@@ -38,7 +33,7 @@ export default new Router({
     {
       path: '/teacher/detailCourse/:id',
       props: true,
-      name: 'learCourse',
+      name: 'detailCourse',
       component: TeacherDetailCourse
     },
     {

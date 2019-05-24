@@ -3,6 +3,7 @@
     v-ripple
     class="text-xs-center elevation-2 pa-5 headline"
   >
+    <v-progress-linear v-if='processing' color='success' :indeterminate='true'></v-progress-linear>
     <v-timeline align-top>
       <v-timeline-item
           color="red lighten-2"
@@ -75,6 +76,7 @@
   export default {
     props: ['id'],
     data: () => ({
+      processing: false,
       videos: [
       ],
       documents: [
@@ -85,11 +87,17 @@
       }
     }),
     async mounted () {
+      this.processing = true
       let result = await homeApi.quickLook(this.id)
-      this.course = result.data.data.courseInfo
-      this.AdminInfo = result.data.data.AdminInfo
-      this.videos = result.data.data.videos
-      this.documents = result.data.data.documents
+      if(result.data.isSuccessfully){
+        this.course = result.data.data.courseInfo
+        this.AdminInfo = result.data.data.AdminInfo
+        this.videos = result.data.data.videos
+        this.documents = result.data.data.documents
+      } else {
+        this.$router.push('/')
+      }
+      this.processing = false
     }
   }
 </script>

@@ -6,6 +6,13 @@
           fluid
           grid-list-md
         >
+          <v-progress-linear v-if='processing' color='success' :indeterminate='true'></v-progress-linear>
+          <v-alert v-if='emptyCard'
+            :value="true"
+            type="warning"
+          >
+            You have 0 course
+          </v-alert>
           <v-layout row wrap>
             <v-flex
               v-for="card in cards"
@@ -52,13 +59,25 @@
   import userApi from '../api/user.js'
   export default {
     data: () => ({
+      emptyCard: false,
+      processing: false,
       cards: [
       ]
     }),
     async mounted () {
+      this.processing = true
+      if(this.$cookies.get('userData')==null){
+        this.$router.push('/')
+        return
+      }
       let result = await userApi.listApprove(this.$cookies.get('userData').token)
-      this.cards = result.data.data.listCourse
-      console.log(this.cards)
+      if(result.data.isSuccessfully){
+        this.cards = result.data.data.listCourse
+        this.processing = false
+        this.emptyCard = this.cards.length == 0
+      } else {
+        this.$router.push('/')
+      }
     },
     methods: {
       mediaUrl: function(url){
