@@ -44,7 +44,7 @@
               v-model="dialog"
               width="500"
             >
-              <template v-slot:activator="{ on }">
+              <template v-if='isAssign' v-slot:activator="{ on }">
                 <v-btn
                   color="red lighten-2"
                   dark
