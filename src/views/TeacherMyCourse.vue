@@ -79,7 +79,7 @@
         return media(url)
       },
       onBack: function () {
-        this.$router.push('/detail-course/10')
+        // this.$router.push('/detail-course/10')
       },
       onDetailCourse: function (id) {
         this.$router.push('detailCourse/' + id.toString())

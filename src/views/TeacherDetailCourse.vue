@@ -113,7 +113,7 @@
           this.list_user_assign = res.data.data.listUserAssign
         }
       )
-      let getInfoCourse = 'http://api-ilearning.herokuapp.com/api/v1/admin/viewCourse/' + this.id
+      let getInfoCourse = 'https://api-ilearning.herokuapp.com/api/v1/admin/viewCourse/' + this.id
       axios.get(getInfoCourse, {
         headers:
           {
