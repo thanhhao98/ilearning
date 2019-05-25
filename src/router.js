@@ -7,6 +7,8 @@ import WaitingCourse from './views/WaitingCourse.vue'
 import LearnCourse from './views/LearnCourse.vue'
 import TeacherMyCourse from './views/TeacherMyCourse.vue'
 import TeacherDetailCourse from './views/TeacherDetailCourse.vue'
+import TeacherAddDoc from './views/TeacherAddDoc.vue'
+import TeacherAddVideo from './views/TeacherAddVideo.vue'
 
 Vue.use(Router)
 
@@ -35,6 +37,18 @@ export default new Router({
       props: true,
       name: 'detailCourse',
       component: TeacherDetailCourse
+    },
+    {
+      path: '/teacher/addDoc/:id',
+      props: true,
+      name: 'addDoc',
+      component: TeacherAddDoc
+    },
+    {
+      path: '/teacher/addVideo/:id',
+      props: true,
+      name: 'addVideo',
+      component: TeacherAddVideo
     },
     {
       path: '/user/learnCourse/:id',

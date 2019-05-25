@@ -47,19 +47,91 @@
           </v-toolbar>
 
           <v-tabs-items v-model="tab">
+            <v-alert v-model='approveFail' type='error' dismissible>
+              {{message}}
+            </v-alert>
             <v-tab-item
               v-for="item in items"
               :key="item"
             >
               <v-card flat>
-                <div v-if='item === "users assign"'>
-                 <!--TODO: UI list users assign-->
+                <div v-if='item === "Users waiting"'>
+                  <div v-for="(user,index) in list_user_assign" :key="user.userInfo.id" row class="my-2">
+                    <v-card-actions>
+                      <v-list-tile-avatar color="grey darken-3">
+                        <v-img
+                          class="elevation-6"
+                          :src="mediaUrl(user.userInfo.avt)"
+                        ></v-img>
+                      </v-list-tile-avatar>
+
+                      <v-list-tile-content>
+                        <v-list-tile-title>{{user.userInfo.username}}</v-list-tile-title>
+                        <v-list-tile-sub-title class="text--primary">Email: {{user.userInfo.email}}</v-list-tile-sub-title>
+                      </v-list-tile-content>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green" @click="approveUser(user.signId,index)">Accept</v-btn>
+                    </v-card-actions>
+                  </div>
+                  <v-divider></v-divider>
                 </div>
                 <div v-else-if='item === "documents"'>
-                      <!--TODO: UI list documents-->
+                  <v-list two-line>
+                    <template v-for="(item,index) in list_document">
+                      <div :key="index" class="ml-3">
+                      <v-card-actions >
+                      <v-img :src="require('@/assets/pdf_icon.png')"
+                      max-width="70px"
+                      max-height="90px"></v-img>
+                      <v-list-tile>
+                        <v-list-tile-content>
+                          <v-list-tile-title @click="goTo(mediaUrl(item.path))"
+                          class="text-title">{{ item.title }}</v-list-tile-title>
+                          <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+
+                      </v-card-actions>
+                      <v-divider></v-divider>
+                      </div>
+
+                    </template>
+                  </v-list>
+                  <div>
+
+                    <v-btn
+                      color="red"
+                      dark
+                      @click="add_doc()"
+                    >
+                      Add Document
+                    </v-btn>
+
+                  </div>
                 </div>
-                <div v-else>
+                 <div v-else>
                   <!--TODO: UI list video-->
+                  <v-list two-line>
+                    <template v-for="(item, index) in list_video">
+                      <v-list-tile
+                        :key="item.id"
+                      >
+                        <v-list-tile-content>
+                          <v-list-tile-sub-title @click="goTo(mediaUrl(item.path))" class="text--primary">Title: {{ item.title }}</v-list-tile-sub-title>
+                          <v-list-tile-sub-title>Description: {{ item.description }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </template>
+                  </v-list>
+                  <div>
+                    <v-btn
+                      color="red"
+                      dark
+                      @click="add_video()"
+                    >
+                      Add Video
+                    </v-btn>
+                  </div>
                 </div>
               </v-card>
             </v-tab-item>
@@ -76,10 +148,12 @@
   import { media,teacherApi } from '../api/config.js'
   export default {
     name: 'DetailCourse',
+    props: ['id'],
     data: () => ({
+      approveFail: false,
+      message: '',
       prcessing: false,
       tab: null,
-      id: '',
       course: '',
       items: [
         'documents', 'videos', 'Users waiting'
@@ -95,13 +169,47 @@
       }
     },
     methods: {
+      goTo: function(url){
+        window.open(url)
+      },
+      add_doc: function(){
+        this.$router.push('/teacher/addDoc/'+this.course.id)
+      },
+      add_video: function(){
+        this.$router.push('/teacher/addVideo/'+this.course.id)
+      },
+      approveUser: function (signId,index) {
+        let path = teacherApi('approveSign')
+        axios.put(path, {
+          signId: signId,
+        }, {
+          headers:
+              {
+                'Authorization':
+                this.token
+              }
+        }).then(
+          res => {
+            if(res.data.isSuccessfully){
+              this.list_user_assign.splice(index, 1)
+            } else {
+              this.approveFail = true
+              this.message = res.data.message
+              console.log(res.data.message)
+            }
+          }
+        ).catch(error=>{
+          this.approveFail = true
+          this.message = res.data.message
+          console.log(error)
+        })
+      },
       mediaUrl: function(url){
         return media(url)
       },
     },
     created: function () {
       this.prcessing = true
-      this.id = this.$route.params.id
       if(this.$cookies.get('userData')==null){
         this.$router.push('/')
       }
